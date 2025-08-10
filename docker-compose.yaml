@@ -1,0 +1,13 @@
+services:
+  n8n:
+    image: n8nio/n8n:stable
+    restart: unless-stopped
+    ports:
+      - 5678:5678
+    volumes:
+      - ./env-dev/:/home/node/.n8n
+    environment:
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_USER_FOLDER=/home/node/.n8n
+      - N8N_RUNNERS_ENABLED=true

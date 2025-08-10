@@ -6,7 +6,7 @@ import type {
  INodeTypeDescription,
  } from 'n8n-workflow';
 import { toSingleRecord } from '../../lib/n8n.utils';
-import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
+import { NodeConnectionType } from 'n8n-workflow';
 
 export class TdkMergeBranches implements INodeType {
  description: INodeTypeDescription = {

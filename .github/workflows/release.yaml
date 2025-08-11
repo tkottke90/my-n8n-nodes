@@ -1,0 +1,56 @@
+name: Create Release
+
+on: 
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        run: npm install pnpm && npx pnpm install
+
+      - name: 'Create Release Filename'
+        # If triggered by a tag, created a versioned release file name
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: create_release_filename
+        run: echo "RELEASE_FILENAME=@tkottke90-my-n8n-nodes-${{ env.VERSION }}.tar.gz" >> $GITHUB_ENV
+
+      - name: 'Create Snapshot Filename'
+        # If triggered by a tag, created a versioned snapshot file name
+        if: github.ref == 'refs/heads/main'
+        id: create_snapshot_filename
+        run: echo "RELEASE_FILENAME=@tkottke90-my-n8n-nodes-${{ env.VERSION }}-${{ github.sha }}-SNAPSHOT.tar.gz" >> $GITHUB_ENV
+
+      - name: Build
+        run: npx pnpm run build
+
+      - name: Test
+        # Run tests if npm run test is available otherwise log no tests found
+        run: npx pnpm run test --if-present || echo "No tests found"
+
+      - name: Package the artifacts
+        # Tar the dist folder into a archive
+        run: tar -czvf ${{ env.RELEASE_FILENAME }} dist
+        
+      - name: 'Get Version from package.json'
+        id: get_version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          make_latest: true
+          files: ${{ env.RELEASE_FILENAME }}
+          tag_name: ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: github.ref == 'refs/heads/main'

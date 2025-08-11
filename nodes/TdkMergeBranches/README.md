@@ -15,13 +15,3 @@ This node is simply used by adding it to your workflow and connecting the branch
 > [!important] 
 > This node only merges the zero index of each input.  If you have multiple items in your input arrays, you will need to use a different strategy.  Also this will act like a Javascript object spread or `Object.assign` which means that any keys in the second input will overwrite keys in the first input.
 
----
-
-## Examples without library
-
-Below are some screenshots of examples where I had previously created the same outside of using this library
-
-### Example: Merge + Aggregate
-
-The Merge + Aggregate strategy involves (as the name implies) using a merge node and an aggregate node.  The merge node is used to combine the 2 branches together and the aggregate node is used to merge the 2 objects together.
-

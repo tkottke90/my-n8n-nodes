@@ -58,7 +58,7 @@ Setup has been made easy by a `setup.sh` script in the `bin` folder.  Simply run
 
 The script will check for dependencies, install them if necessary, and build the project.  It will also optionally start the Docker container if Docker is installed. 
 
-## Development
+### Development
 
 To deploy your changes to the local n8n development environment, run the following command from the root of the project:
 
@@ -66,7 +66,9 @@ To deploy your changes to the local n8n development environment, run the followi
 ./bin/deploy-local.sh
 ```
 
+### Contributing
 
+Contributions are welcome!  Please submit a pull request or open an issue.  I am always open to feedback and suggestions.
 
 ## More information
 

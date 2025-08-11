@@ -2,6 +2,10 @@
 
 This repo contains a collection of custom N8N Nodes that I have developed for my own use.  
 
+## Deployment
+
+To deploy this library to your local n8n instance you can use the following shell script to download the install file from this repository which which will download the latest release and install it in your `/.n8n/custom` folder.  
+
 ## Setup
 
 Setup has been made easy by a `setup.sh` script in the `bin` folder.  Simply run the following command from the root of the project:
@@ -19,6 +23,8 @@ To deploy your changes to the local n8n development environment, run the followi
 ```bash
 ./bin/deploy-local.sh
 ```
+
+
 
 ## More information
 

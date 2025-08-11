@@ -17,6 +17,10 @@ jobs:
       - name: Setup
         run: npm install pnpm && npx pnpm install
 
+      - name: 'Get Version from package.json'
+        id: get_version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
       - name: 'Create Release Filename'
         # If triggered by a tag, created a versioned release file name
         if: startsWith(github.ref, 'refs/tags/v')
@@ -39,11 +43,6 @@ jobs:
       - name: Package the artifacts
         # Tar the dist folder into a archive
         run: tar -czvf ${{ env.RELEASE_FILENAME }} dist
-        
-      - name: 'Get Version from package.json'
-        id: get_version
-        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
-
 
       - name: Release
         uses: softprops/action-gh-release@v2

@@ -196,7 +196,7 @@ sync_files() {
     fi
     
     # Use rsync to sync files, excluding package.json and tsconfig.buildinfo
-    if ! rsync -av --exclude="package.json" --exclude="tsconfig.buildinfo" "$source_dir" "$N8N_CUSTOM_DIR/"; then
+    if ! rsync -av --exclude="package.json" --exclude="tsconfig.buildinfo" "$source_dir" "$N8N_CUSTOM_DIR/$REPO_OWNER/$REPO_NAME"; then
         error_exit "Failed to sync files to custom directory"
     fi
     

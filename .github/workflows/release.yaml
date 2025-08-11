@@ -59,6 +59,10 @@ jobs:
 
           tar -czvf ${{ env.RELEASE_FILENAME }} dist
 
+      - name: Create Tag
+        id: create_tag
+        run: echo "TAG=v${{ env.VERSION }}${{ env.RELEASE_FILENAME_SUFFIX != '' && format('-{0}', env.RELEASE_FILENAME_SUFFIX) || '' }}" >> $GITHUB_ENV
+      
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
@@ -67,3 +71,4 @@ jobs:
           name: Release ${{ env.VERSION }}${{ env.RELEASE_FILENAME_SUFFIX != '' && format('-{0}', env.RELEASE_FILENAME_SUFFIX) || '' }}
           draft: false
           prerelease: ${{ env.IS_SNAPSHOT == 'true' }}
+          tag: ${{ env.TAG }}

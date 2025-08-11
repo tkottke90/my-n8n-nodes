@@ -1,20 +1,20 @@
 import type {
- IDataObject,
- IExecuteFunctions,
- INodeExecutionData,
- INodeType,
- INodeTypeDescription,
- } from 'n8n-workflow';
+  IExecuteFunctions,
+  INodeExecutionData,
+  INodeType,
+  INodeTypeDescription
+} from 'n8n-workflow';
 import { toSingleRecord } from '../../lib/n8n.utils';
 import { NodeConnectionType } from 'n8n-workflow';
 
 export class TdkMergeBranches implements INodeType {
  description: INodeTypeDescription = {
   displayName: 'Merge Branches',
+  icon: 'file:./TdkMergeBranches.svg',
   name: 'tdkMergeBranches',
   group: ['transform'],
   version: 1,
-  description: 'Node to merge branches of a workflow together as a single record',
+  description: 'Merges 2 json data sets together (similar to a Javascript object spread).  Keys in Input 2 will overwrite keys in Input 1.',
   defaults: {
    name: 'Merge Branches',
   },
@@ -29,16 +29,12 @@ export class TdkMergeBranches implements INodeType {
  // with whatever the user has entered.
  // You can make async calls and use `await`.
  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-  const items = this.getInputData();
+  const sideA = this.getInputData(0)[0].json;
+  const sideB = this.getInputData(1)[0].json;
   
-  const output: IDataObject = {};
-
-  items.forEach(item => {
-   Object.assign(output, item.json);
-  })
-
   return toSingleRecord({
-   ...output
+    ...sideA,
+    ...sideB
   });
  }
 }

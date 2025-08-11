@@ -1,10 +1,52 @@
 # My N8N Nodes
 
-This repo contains a collection of custom N8N Nodes that I have developed for my own use.  
+This repo contains a collection of custom N8N Nodes that I have developed for my own use.
 
-## Deployment
+## Installation
 
-To deploy this library to your local n8n instance you can use the following shell script to download the install file from this repository which which will download the latest release and install it in your `/.n8n/custom` folder.  
+### Quick Install (Latest Version)
+
+To install the latest version of these custom nodes in your n8n instance, run this one-liner:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/tkottke90/my-n8n-nodes/master/bin/install.sh | bash
+```
+
+### Manual Install with Options
+
+For more control over the installation process, download the install script first:
+
+```bash
+# Download the install script
+wget https://raw.githubusercontent.com/tkottke90/my-n8n-nodes/master/bin/install.sh
+chmod +x install.sh
+
+# Show available options
+./install.sh --help
+
+# Install latest version
+./install.sh
+
+# Install specific version
+./install.sh -v v1.2.3
+
+# List available versions
+./install.sh -L
+
+# Preview what would be installed (dry run)
+./install.sh --dry-run
+```
+
+### Installation Details
+
+The install script will:
+- Download the latest release (or specified version) from GitHub
+- Extract and install files to your `~/.n8n/custom` directory
+- Skip `package.json` and `tsconfig.buildinfo` files to avoid conflicts
+- Track the installed version in `~/.n8n/custom/.my-n8n-nodes.version`
+- Prompt for confirmation if reinstalling the same version
+
+**Note:** You may need to restart n8n after installation to see the new nodes.
 
 ## Setup
 

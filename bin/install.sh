@@ -7,7 +7,7 @@ set -e
 REPO_OWNER="tkottke90"
 REPO_NAME="my-n8n-nodes"
 PACKAGE_NAME="@tkottke90-my-n8n-nodes"
-N8N_CUSTOM_DIR="~/.n8n/custom"
+N8N_CUSTOM_DIR="/home/node/.n8n/custom"
 VERSION_FILE="$N8N_CUSTOM_DIR/.${REPO_NAME}.version"
 TEMP_DIR=""
 DRY_RUN=false

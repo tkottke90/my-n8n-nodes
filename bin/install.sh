@@ -80,18 +80,18 @@ get_api_url() {
 # Function to list available versions
 list_versions() {
     echo "📋 Fetching available versions..."
-    
-    if ! command_exists curl; then
-        error_exit "curl is required but not installed"
+
+    if ! command_exists wget; then
+        error_exit "wget is required but not installed"
     fi
-    
+
     local api_url=$(get_api_url)
-    local releases=$(curl -s "$api_url/releases" | grep '"tag_name":' | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/' | head -20)
-    
+    local releases=$(wget -qO- "$api_url/releases" | grep '"tag_name":' | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/' | head -20)
+
     if [ -z "$releases" ]; then
         error_exit "No releases found or failed to fetch releases"
     fi
-    
+
     echo "Available versions:"
     echo "$releases" | while read -r version; do
         echo "  $version"
@@ -101,14 +101,14 @@ list_versions() {
 # Function to get latest release info
 get_latest_release() {
     local api_url=$(get_api_url)
-    curl -s "$api_url/releases/latest"
+    wget -qO- "$api_url/releases/latest"
 }
 
 # Function to get specific release info
 get_release_info() {
     local version="$1"
     local api_url=$(get_api_url)
-    curl -s "$api_url/releases/tags/$version"
+    wget -qO- "$api_url/releases/tags/$version"
 }
 
 # Function to extract download URL from release info
@@ -269,7 +269,7 @@ install_package() {
     local release_info
     
     # Check required commands
-    for cmd in curl wget tar rsync; do
+    for cmd in wget tar rsync; do
         if ! command_exists "$cmd"; then
             error_exit "$cmd is required but not installed"
         fi

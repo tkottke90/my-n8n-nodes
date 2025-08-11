@@ -23,6 +23,7 @@ usage() {
     echo "  -h, --help              Show this help message"
     echo "  -v, --version VERSION   Install specific version (e.g., v1.0.0)"
     echo "  -L, --list-versions     List available versions"
+    echo "  --location              Show location of version file"
     echo "  --dry-run              Show what would be done without making changes"
     echo "  --verbose              Enable verbose output"
     echo ""
@@ -226,6 +227,15 @@ show_current_version() {
     fi
 }
 
+# Function to show version file location
+show_version_file_location() {
+    if [ -f "$VERSION_FILE" ]; then
+        echo "$VERSION_FILE"
+    else
+        echo "NONE"
+    fi
+}
+
 # Function to prompt user for yes/no confirmation
 prompt_yes_no() {
     local prompt="$1"
@@ -339,6 +349,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -L|--list-versions)
             list_versions
+            exit 0
+            ;;
+        --location)
+            show_version_file_location
             exit 0
             ;;
         --dry-run)

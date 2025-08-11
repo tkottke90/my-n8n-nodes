@@ -64,6 +64,7 @@ jobs:
         run: echo "TAG=v${{ env.VERSION }}${{ env.RELEASE_FILENAME_SUFFIX != '' && format('-{0}', env.RELEASE_FILENAME_SUFFIX) || '' }}" >> $GITHUB_ENV
       
       - name: Release
+        if: ${{ env.IS_RELEASE == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           make_latest: true
@@ -71,4 +72,11 @@ jobs:
           name: Release ${{ env.VERSION }}${{ env.RELEASE_FILENAME_SUFFIX != '' && format('-{0}', env.RELEASE_FILENAME_SUFFIX) || '' }}
           draft: false
           prerelease: ${{ env.IS_SNAPSHOT == 'true' }}
-          tag: ${{ env.TAG }}
+          tag: ${{ github.ref }}
+
+      - name: Save Artifact
+        if: ${{ env.IS_SNAPSHOT == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.RELEASE_FILENAME }}
+          path: ${{ env.RELEASE_FILENAME }}

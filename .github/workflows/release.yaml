@@ -70,6 +70,7 @@ jobs:
           make_latest: true
           files: ${{ env.RELEASE_FILENAME }}
           name: Release ${{ env.VERSION }}${{ env.RELEASE_FILENAME_SUFFIX != '' && format('-{0}', env.RELEASE_FILENAME_SUFFIX) || '' }}
+          generate_release_notes: true
           draft: false
           prerelease: ${{ env.IS_SNAPSHOT == 'true' }}
           tag: ${{ github.ref }}

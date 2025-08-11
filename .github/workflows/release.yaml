@@ -7,6 +7,10 @@ on:
     tags:
       - v*
 
+env:
+  IS_SNAPSHOT: ${{ github.ref == 'refs/heads/master' }}
+  IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,17 +25,22 @@ jobs:
         id: get_version
         run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
-      - name: 'Create Release Filename'
-        # If triggered by a tag, created a versioned release file name
-        if: startsWith(github.ref, 'refs/tags/v')
-        id: create_release_filename
-        run: echo "RELEASE_FILENAME=@tkottke90-my-n8n-nodes-${{ env.VERSION }}.tar.gz" >> $GITHUB_ENV
+      - name: 'Get Short SHA'
+        id: get_short_sha
+        run: echo "SHORT_SHA=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
 
-      - name: 'Create Snapshot Filename'
-        # If triggered by a tag, created a versioned snapshot file name
-        if: github.ref == 'refs/heads/main'
-        id: create_snapshot_filename
-        run: echo "RELEASE_FILENAME=@tkottke90-my-n8n-nodes-${{ env.VERSION }}-${{ github.sha }}-SNAPSHOT.tar.gz" >> $GITHUB_ENV
+      - name: 'Create Release Filename Suffix'
+        id: create_release_filename_suffix
+        run: |
+          if [ "${{ env.IS_SNAPSHOT }}" == "true" ]; then
+            echo "RELEASE_FILENAME_SUFFIX=${{ env.SHORT_SHA }}-SNAPSHOT" >> $GITHUB_ENV
+          else
+            echo "RELEASE_FILENAME_SUFFIX=" >> $GITHUB_ENV
+          fi
+
+      - name: 'Create Release Filename'
+        id: create_release_filename
+        run: echo "RELEASE_FILENAME=@tkottke90-my-n8n-nodes-${{ env.VERSION }}${{ env.RELEASE_FILENAME_SUFFIX != '' && format('-{0}', env.RELEASE_FILENAME_SUFFIX) || '' }}.tar.gz" >> $GITHUB_ENV
 
       - name: Build
         run: npx pnpm run build
@@ -41,15 +50,20 @@ jobs:
         run: npx pnpm run test --if-present || echo "No tests found"
 
       - name: Package the artifacts
-        # Tar the dist folder into a archive
-        run: tar -czvf ${{ env.RELEASE_FILENAME }} dist
+        # Tar the dist folder into a archive as long as the RELEASE_FILENAME is set or throw an error
+        run: |
+          if [ -z "${{ env.RELEASE_FILENAME }}" ]; then
+            echo "RELEASE_FILENAME is not set. Aborting."
+            exit 1
+          fi
+
+          tar -czvf ${{ env.RELEASE_FILENAME }} dist
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           make_latest: true
           files: ${{ env.RELEASE_FILENAME }}
-          tag_name: ${{ env.VERSION }}
-          name: Release ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}${{ env.RELEASE_FILENAME_SUFFIX != '' && format('-{0}', env.RELEASE_FILENAME_SUFFIX) || '' }}
           draft: false
-          prerelease: github.ref == 'refs/heads/main'
+          prerelease: ${{ env.IS_SNAPSHOT == 'true' }}
